@@ -7,42 +7,14 @@ namespace ArdalisRating.Tests
 {
     public class RatingEngineRate
     {
-[Fact]
-public void ReturnsRatingOf10000For200000LandPolicy()
-{
-    var policy = new Policy
-    {
-        Type = PolicyType.Land,
-        BondAmount = 200000,
-        Valuation = 200000
-    };
-    string json = JsonConvert.SerializeObject(policy);
-    File.WriteAllText("policy.json", json);
-
-    var engine = new RatingEngine();
-    engine.Rate();
-    var result = engine.Rating;
-
-    Assert.Equal(10000, result);
-}
-
         [Fact]
-        public void ReturnsRatingOf0For200000BondOn260000LandPolicy()
+        public void RetunsDefaultPolicyFromEmptyJsonString()
         {
-            var policy = new Policy
-            {
-                Type = PolicyType.Land,
-                BondAmount = 200000,
-                Valuation = 260000
-            };
-            string json = JsonConvert.SerializeObject(policy);
-            File.WriteAllText("policy.json", json);
-
-            var engine = new RatingEngine();
-            engine.Rate();
-            var result = engine.Rating;
-
-            Assert.Equal(0, result);
+            var inputJson = "{}";
+            var serializer = new JsonPolicyDeserialilzer();
+            var result = serializer.GetDeserializePolicy(inputJson);
+            var policy = new Policy();
+            Assert.Equal(result, policy);
         }
     }
 }
