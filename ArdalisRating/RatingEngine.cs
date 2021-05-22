@@ -14,8 +14,8 @@ namespace ArdalisRating
         public ConsoleLogger Logger = new ConsoleLogger();
         public FilePolicySource FilePolicySource = new FilePolicySource();
         public JsonPolicyDeserialilzer PolicyDeserialilzer = new JsonPolicyDeserialilzer();
-
         public decimal Rating { get; set; }
+
         public void Rate()
         {
             Logger.Log("Starting rate.");
@@ -24,27 +24,10 @@ namespace ArdalisRating
             string policyJson = FilePolicySource.GetFilePolictyFromSource("policy.json");
             var policy = PolicyDeserialilzer.GetDeserializePolicy(policyJson);
 
-            switch (policy.Type)
-            {
-                case PolicyType.Auto:
-                    var autoRater = new AutoPolicyRater(this, Logger);
-                    autoRater.Rate(policy);
-                    break;
+            var factory = new RaterFactory();
 
-                case PolicyType.Land:
-                    var landRater = new LandPolictyRater(this, Logger);
-                    landRater.Rate(policy);
-                    break;
-
-                case PolicyType.Life:
-                    var lifeRater = new LifePolicyRater(this, Logger);
-                    lifeRater.Rate(policy);
-                    break;
-
-                default:
-                    Logger.Log("Unknown policy type");
-                    break;
-            }
+            var rater = factory.Create(policy, this);
+            rater?.Rate(policy);
 
             Logger.Log("Rating completed.");
         }
